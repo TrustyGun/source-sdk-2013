@@ -220,6 +220,16 @@ public:
 	void				TFWeaponRemove( int iWeaponID );
 	bool				TFWeaponDrop( CTFWeaponBase *pWeapon, bool bThrowForward );
 
+	// TRUSTY: Armor!
+	int					GetArmor( void ) { return m_iArmor; }
+	int					GetMaxArmor( void ) { return m_iMaxArmor; }
+	void				SetArmorValue(int iArmor);
+	void				ChangeArmorValue(int iArmor);
+private:
+	CNetworkVar(int, m_iArmor);
+	CNetworkVar(int, m_iMaxArmor);
+
+public:
 	// Class.
 	CTFPlayerClass		 *GetPlayerClass( void ) 					{ return &m_PlayerClass; }
 	const CTFPlayerClass *GetPlayerClass( void ) const				{ return &m_PlayerClass; }

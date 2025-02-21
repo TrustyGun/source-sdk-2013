@@ -3756,6 +3756,10 @@ IMPLEMENT_CLIENTCLASS_DT( C_TFPlayer, DT_TFPlayer, CTFPlayer )
 	RecvPropInt( RECVINFO( m_iPlayerSkinOverride ) ),
 	RecvPropBool( RECVINFO( m_bViewingCYOAPDA ) ),
 	RecvPropBool( RECVINFO( m_bRegenerating ) ),
+
+	//TRUSTY: Armor
+	RecvPropInt( RECVINFO(m_iArmor) ),
+	RecvPropInt( RECVINFO(m_iMaxArmor) ),
 END_RECV_TABLE()
 
 
@@ -3934,6 +3938,9 @@ C_TFPlayer::C_TFPlayer() :
 	m_flHelpmeButtonPressTime = 0.f;
 	m_bViewingCYOAPDA = false;
 	m_bRegenerating = false;
+
+	m_iArmor = 0;
+	m_iMaxArmor = 0;
 
 	m_bNotifiedWeaponInspectThisLife = false;
 

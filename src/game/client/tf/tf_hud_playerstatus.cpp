@@ -649,6 +649,7 @@ CTFHudPlayerHealth::CTFHudPlayerHealth( Panel *parent, const char *name ) : Edit
 	m_pMilkImage = new ImagePanel( this, "PlayerStatusMilkImage" );
 	m_pGasImage = new ImagePanel( this, "PlayerStatusGasImage" );
 	m_pSlowedImage = new ImagePanel( this, "PlayerStatusSlowed" );
+	m_pArmorImage = new ImagePanel(this, "PlayerStatusArmorBackground");
 
 	m_pWheelOfDoomImage = new ImagePanel( this, "PlayerStatus_WheelOfDoom" );
 
@@ -728,6 +729,8 @@ void CTFHudPlayerHealth::ApplySchemeSettings( IScheme *pScheme )
 	m_pBuildingHealthImageBG->SetVisible( m_bBuilding );
 
 	m_pPlayerLevelLabel = dynamic_cast<CExLabel*>( FindChildByName( "PlayerStatusPlayerLevel" ) );
+	m_pPlayerArmorLabel = dynamic_cast<CExLabel*>( FindChildByName("PlayerStatusArmorLabel"));
+	m_pPlayerMaxArmorLabel = dynamic_cast<CExLabel*>(FindChildByName("PlayerStatusMaxArmorLabel"));
 }
 
 //-----------------------------------------------------------------------------
@@ -887,6 +890,32 @@ void CTFHudPlayerHealth::SetLevel( int nLevel )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+void CTFHudPlayerHealth::SetArmor(int iArmor, int iMaxArmor)
+{
+	if ( m_pPlayerArmorLabel )
+	{
+		m_pArmorImage->SetVisible(false);
+		m_pPlayerArmorLabel->SetVisible(false);
+		m_pPlayerMaxArmorLabel->SetVisible(false);
+		m_nArmor = iArmor;
+		m_nMaxArmor = iMaxArmor;
+		if (m_nMaxArmor > 0)
+		{
+			m_pArmorImage->SetVisible(true);
+			m_pPlayerArmorLabel->SetVisible(true);
+			if (m_nArmor < m_nMaxArmor)
+			{
+				m_pPlayerMaxArmorLabel->SetVisible(true);
+			}
+			m_pPlayerArmorLabel->SetText(CFmtStr("%d", m_nArmor));
+			m_pPlayerMaxArmorLabel->SetText(CFmtStr("%d", m_nMaxArmor));
+		}
+	}
+};
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
 void CTFHudPlayerHealth::HideHealthBonusImage( void )
 {
 	if ( m_pHealthBonusImage && m_pHealthBonusImage->IsVisible() )
@@ -948,6 +977,7 @@ void CTFHudPlayerHealth::OnThink()
 		if ( pPlayer )
 		{
 			SetHealth( pPlayer->GetHealth(), pPlayer->GetMaxHealth(), pPlayer->m_Shared.GetMaxBuffedHealth() );
+			SetArmor( pPlayer->GetArmor(), pPlayer->GetMaxArmor() );
 
 			int color_offset = ((int)(gpGlobals->realtime*10)) % 5;
 			int color_fade	 = 160 + (color_offset*10);

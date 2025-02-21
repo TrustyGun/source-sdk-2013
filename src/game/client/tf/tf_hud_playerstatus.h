@@ -170,6 +170,7 @@ public:
 	virtual void Reset();
 
 	void	SetHealth( int iNewHealth, int iMaxHealth, int iMaxBuffedHealth );
+	void	SetArmor(int iArmor, int iMaxArmor);
 	void	SetLevel( int nLevel );
 	void	HideHealthBonusImage( void );
 	void	SetBuilding( bool bBuilding ) { m_bBuilding = bBuilding; }
@@ -195,12 +196,18 @@ private:
 	vgui::ImagePanel	*m_pMarkedForDeathImageSilent;
 	vgui::ImagePanel	*m_pWheelOfDoomImage;
 	vgui::ImagePanel	*m_pSlowedImage;
+	vgui::ImagePanel	*m_pArmorImage;
 	CExLabel			*m_pPlayerLevelLabel;
+	CExLabel			*m_pPlayerArmorLabel;
+	CExLabel			*m_pPlayerMaxArmorLabel;
 
 	CUtlVector<CTFBuffInfo*> m_vecBuffInfo;
 
 	int					m_nHealth;
 	int					m_nMaxHealth;
+
+	int					m_nArmor;
+	int					m_nMaxArmor;
 
 	int					m_nBonusHealthOrigX;
 	int					m_nBonusHealthOrigY;

@@ -953,6 +953,13 @@ private:
 	CNetworkVar( bool, m_bViewingCYOAPDA );
 	CNetworkVar( bool, m_bRegenerating );
 
+	CNetworkVar( int, m_iArmor);
+	CNetworkVar( int, m_iMaxArmor);
+public:
+	int GetArmor() { return m_iArmor; }
+	int GetMaxArmor() { return m_iMaxArmor; }
+
+private:
 	bool m_bNotifiedWeaponInspectThisLife;
 
 	C_PasstimePlayerReticle *m_pPasstimePlayerReticle;

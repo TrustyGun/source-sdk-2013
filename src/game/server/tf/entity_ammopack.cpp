@@ -93,6 +93,14 @@ bool CAmmoPack::MyTouch( CBasePlayer *pPlayer )
 			bSuccess = true;
 		}
 
+		// TRUSTY: Armor!
+
+		if (pTFPlayer->GetArmor() < pTFPlayer->GetMaxArmor())
+		{
+			bSuccess = true;
+			pTFPlayer->ChangeArmorValue( round( pTFPlayer->GetMaxArmor() * flPackRatio ) );
+		}
+
 		int iAmmoIsCharge = 0;
 		CALL_ATTRIB_HOOK_INT_ON_OTHER( pTFPlayer, iAmmoIsCharge, ammo_gives_charge );
 		if ( iAmmoIsCharge )

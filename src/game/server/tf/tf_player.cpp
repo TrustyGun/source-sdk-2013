@@ -843,6 +843,8 @@ IMPLEMENT_SERVERCLASS_ST( CTFPlayer, DT_TFPlayer )
 	SendPropInt( SENDINFO( m_iPlayerSkinOverride ) ),
 	SendPropBool( SENDINFO( m_bViewingCYOAPDA ) ),
 	SendPropBool( SENDINFO( m_bRegenerating ) ),
+	SendPropInt( SENDINFO( m_iArmor ) ),
+	SendPropInt( SENDINFO( m_iMaxArmor ) ),
 END_SEND_TABLE()
 
 // -------------------------------------------------------------------------------- //
@@ -940,7 +942,7 @@ CTFPlayer::CTFPlayer()
 
 	m_PlayerAnimState = CreateTFPlayerAnimState( this );
 
-	SetArmorValue( 10 );
+	SetArmorValue( 0 );
 
 	m_hItem = NULL;
 	m_hTauntScene = NULL;
@@ -4175,7 +4177,6 @@ void CTFPlayer::Regenerate( bool bRefillHealthAndAmmo /*= true*/ )
 //-----------------------------------------------------------------------------
 void CTFPlayer::InitClass( void )
 {
-	SetArmorValue( GetPlayerClass()->GetMaxArmor() );
 
 	// Init the anim movement vars
 	m_PlayerAnimState->SetRunSpeed( GetPlayerClass()->GetMaxSpeed() );
@@ -4188,6 +4189,8 @@ void CTFPlayer::InitClass( void )
 	// Do it after items have been delivered, so items can modify it
 	SetMaxHealth( GetMaxHealth() );
 	SetHealth( GetMaxHealth() );
+	m_iMaxArmor = GetPlayerClass()->GetMaxArmor();
+	SetArmorValue(m_iMaxArmor);
 
 	TeamFortress_SetSpeed();
 
@@ -8511,6 +8514,24 @@ void CTFPlayer::TFWeaponRemove( int iWeaponID )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: Trusty: Sets Armor to a certain value.
+//-----------------------------------------------------------------------------
+void CTFPlayer::SetArmorValue(int iArmor)
+{
+	m_iArmor.Set(iArmor);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Trusty: Changes Armor by X amount, which can either be negative or positive.
+// Clamps between 0 and m_iMaxArmor.
+//-----------------------------------------------------------------------------
+void CTFPlayer::ChangeArmorValue(int iArmor)
+{
+	m_iArmor += iArmor;
+	SetArmorValue( clamp(m_iArmor, 0, m_iMaxArmor) );
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
 bool CTFPlayer::BumpWeapon( CBaseCombatWeapon *pWeapon )
@@ -9346,6 +9367,17 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 				}
 			}
 		}
+	}
+
+	// TRUSTY: Armor implentation. We do it now, after all the various other ways Damage is modified.
+	// Fire, Enviromental, and Enviromental damage bypass Armor.
+	if (GetArmor() > 0
+		&& !bCrit
+		&& !(info.GetDamageType() & DMG_FALL)
+		&& !(info.GetDamageType() & DMG_DROWN))
+	{
+		info.ScaleDamage(0.33f);
+		ChangeArmorValue(-info.GetDamage());
 	}
 
 	//Don't take damage while I'm phasing.
@@ -20188,7 +20220,7 @@ int CTFPlayer::DrawDebugTextOverlays(void)
 	{
 		char tempstr[512];
 
-		Q_snprintf( tempstr, sizeof( tempstr ),"Health: %d / %d ( %.1f )", GetHealth(), GetMaxHealth(), (float)GetHealth() / (float)GetMaxHealth() );
+		Q_snprintf( tempstr, sizeof( tempstr ),"Health: %d / %d Armor: %d / %d ", GetHealth(), GetMaxHealth(), GetArmor(), GetMaxArmor());
 		EntityText(text_offset,tempstr,0);
 		text_offset++;
 	}
