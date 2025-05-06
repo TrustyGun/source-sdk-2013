@@ -120,6 +120,8 @@ public:
 	virtual int		DispenseMetal( CTFPlayer *pPlayer );
 	virtual int		GetAvailableMetal( void ) const;
 
+	virtual bool		DispenseArmor( CTFPlayer* pPlayer );
+
 	virtual void RefillThink( void );
 	virtual void DispenseThink( void );
 
@@ -187,6 +189,7 @@ protected:
 	CUtlVector< EHANDLE >	m_hTouchingEntities;
 
 	float m_flNextAmmoDispense;
+	float m_flNextArmorDispense;
 
 	bool m_bThrown;
 

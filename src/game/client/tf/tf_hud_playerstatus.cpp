@@ -895,21 +895,15 @@ void CTFHudPlayerHealth::SetArmor(int iArmor, int iMaxArmor)
 	if ( m_pPlayerArmorLabel )
 	{
 		m_pArmorImage->SetVisible(false);
-		m_pPlayerArmorLabel->SetVisible(false);
 		m_pPlayerMaxArmorLabel->SetVisible(false);
 		m_nArmor = iArmor;
 		m_nMaxArmor = iMaxArmor;
-		if (m_nMaxArmor > 0)
-		{
+		if (m_nArmor < m_nMaxArmor)
+			m_pPlayerMaxArmorLabel->SetVisible(true);
+		if (m_nArmor > 0)
 			m_pArmorImage->SetVisible(true);
-			m_pPlayerArmorLabel->SetVisible(true);
-			if (m_nArmor < m_nMaxArmor)
-			{
-				m_pPlayerMaxArmorLabel->SetVisible(true);
-			}
-			m_pPlayerArmorLabel->SetText(CFmtStr("%d", m_nArmor));
-			m_pPlayerMaxArmorLabel->SetText(CFmtStr("%d", m_nMaxArmor));
-		}
+		m_pPlayerArmorLabel->SetText(CFmtStr("%d", m_nArmor));
+		m_pPlayerMaxArmorLabel->SetText(CFmtStr("%d", m_nMaxArmor));
 	}
 };
 

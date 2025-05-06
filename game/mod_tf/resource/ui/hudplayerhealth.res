@@ -622,7 +622,7 @@
 		"visible"		"1"
 		"enabled"		"1"
 		"scaleImage"	"1"	
-		"image"			"../Effects/powerup_resist_hud"
+		"image"			"../ui/armor_hud"
 		"fgcolor"		"TanDark"
 	}
 	"PlayerStatusArmorLabel"
@@ -639,7 +639,7 @@
 		"labelText"		"%Armor%"
 		"textAlignment"	"center"	
 		"font"			"DefaultSmall"
-		"fgcolor"		"TanLight"
+		"fgcolor"		"TanDark"
 	}
 	"PlayerStatusMaxArmorLabel"
 	{
@@ -654,7 +654,7 @@
 		"enabled"		"1"
 		"labelText"		"%MaxArmor%"
 		"textAlignment"	"center"	
-		"font"			"DefaultSmall"
-		"fgcolor"		"TanDark"
+		"font"			"DefaultVerySmall"
+		"fgcolor"		"TanDarker"
 	}
 }

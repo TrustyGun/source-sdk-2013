@@ -105,6 +105,16 @@ float g_flDispenserAmmoRates[4] =
 	0.4
 };
 
+// TRUSTY: Dispensers give Armor over-time alongside Health.
+
+float g_flDispenserArmorRates[4] =
+{
+	0,
+	4.0,
+	8.0,
+	12.0
+};
+
 LINK_ENTITY_TO_CLASS( dispenser_touch_trigger, CDispenserTouchTrigger );
 
 //-----------------------------------------------------------------------------
@@ -507,6 +517,7 @@ void CObjectDispenser::Precache()
 	PrecacheScriptSound( "Building_Dispenser.Idle" );
 	PrecacheScriptSound( "Building_Dispenser.GenerateMetal" );
 	PrecacheScriptSound( "Building_Dispenser.Heal" );
+	PrecacheScriptSound( "Powerup.PickUpResistance" );
 
 	PrecacheParticleSystem( "dispenser_heal_red" );
 	PrecacheParticleSystem( "dispenser_heal_blue" );
@@ -591,6 +602,23 @@ int CObjectDispenser::DispenseMetal( CTFPlayer *pPlayer )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+bool CObjectDispenser::DispenseArmor(CTFPlayer* pPlayer)
+{
+	if (!pPlayer)
+		return false;
+	if (pPlayer->GetArmor() < pPlayer->GetMaxArmor())
+	{
+		int iArmorToGive = g_flDispenserArmorRates[GetUpgradeLevel()];
+		pPlayer->ChangeArmorValue(iArmorToGive);
+		EmitSound("Powerup.PickUpResistance");
+		return true;
+	}
+	else { return false; }
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
 void CObjectDispenser::RefillThink( void )
 {
 	if ( IsCarried() )
@@ -653,6 +681,9 @@ void CObjectDispenser::DispenseThink( void )
 	bool bDispenseAmmo = ( m_flNextAmmoDispense <= gpGlobals->curtime );
 	bool bPlayerReceivedAmmo = false;
 
+	// ditto: armor
+	bool bDispenseArmor = (m_flNextArmorDispense <= gpGlobals->curtime);
+
 	// for each player in touching list
 	int iSize = m_hTouchingEntities.Count();
 	bool bIsAnyTeammateTouching = false;
@@ -705,6 +736,13 @@ void CObjectDispenser::DispenseThink( void )
 				{
 					bPlayerReceivedAmmo = true;
 				}
+			}
+
+			// handle armor
+			if (bDispenseArmor && bValidHealTarget)
+			{
+				m_flNextArmorDispense = gpGlobals->curtime + 1.5;
+				DispenseArmor(ToTFPlayer(pEnt));
 			}
 		}
 	}

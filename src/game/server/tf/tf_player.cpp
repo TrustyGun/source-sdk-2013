@@ -9376,7 +9376,7 @@ int CTFPlayer::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 		&& !(info.GetDamageType() & DMG_FALL)
 		&& !(info.GetDamageType() & DMG_DROWN))
 	{
-		info.ScaleDamage(0.33f);
+		info.ScaleDamage(0.66f);
 		ChangeArmorValue(-info.GetDamage());
 	}
 
